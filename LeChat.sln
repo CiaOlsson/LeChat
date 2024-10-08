@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeChat", "LeChat\LeChat\LeChat.csproj", "{83EC0C62-C7B3-4FD5-9B02-85B7521D29F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeChat.Client", "LeChat\LeChat.Client\LeChat.Client.csproj", "{8DD216E6-BF53-4533-8C82-2F4504764ADA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83EC0C62-C7B3-4FD5-9B02-85B7521D29F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83EC0C62-C7B3-4FD5-9B02-85B7521D29F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83EC0C62-C7B3-4FD5-9B02-85B7521D29F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83EC0C62-C7B3-4FD5-9B02-85B7521D29F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DD216E6-BF53-4533-8C82-2F4504764ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DD216E6-BF53-4533-8C82-2F4504764ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DD216E6-BF53-4533-8C82-2F4504764ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DD216E6-BF53-4533-8C82-2F4504764ADA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4E9D750D-03B1-4B7C-8190-AB90B7F6F0F8}
+	EndGlobalSection
+EndGlobal
