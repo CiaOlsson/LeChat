@@ -1,5 +1,5 @@
 # Ignorera appsettings-filer
-appsettings.*
+appsettings.Development.json
 
 # Ignorera .vs-mappen
 .vs/

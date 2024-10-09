@@ -15,8 +15,13 @@ namespace LeChat.Data.Services
 
 		public async Task SaveMessageAsync(string username, string message)
 		{
+			// först hämtas användaren så att jag kan lägga till den och UserId i ChatMessage-objektet
 			var user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == username);
+
+			//Detsamma gäller för Conversation. 
 			var conversation = await _context.Conversations.SingleOrDefaultAsync(c => c.Id == 3);
+
+			// Skapa ett nytt ChatMessage och sätt värden på dess properties. 
 			var chatMessage = new ChatMessage
 			{
 				UserId = user.Id,
@@ -28,7 +33,8 @@ namespace LeChat.Data.Services
 
 			};
 
-			_context.ChatMessages.Add(chatMessage);
+			// Slutligen läggs det till i databasen asynkront
+			await _context.ChatMessages.AddAsync(chatMessage);
 			await _context.SaveChangesAsync();
 
 		
@@ -37,6 +43,8 @@ namespace LeChat.Data.Services
 
 		public async Task<List<ChatMessage>> GetMessagesAsync()
 		{
+			//Hämta alla meddelanden från databasen för att kunna visa historik.
+			//Denna funktion har jag inte helt implementerat ännu. 
 			return await _context.ChatMessages.ToListAsync();
 		}
 	}
