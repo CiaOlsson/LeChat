@@ -1,8 +1,15 @@
 ﻿@page "/chat"
+@using Shared.DTO
+
 @inject NavigationManager NavigationManager
+
+@attribute [Authorize]
 @rendermode InteractiveWebAssembly
 
 <h3>Chat</h3>
+<AuthorizeView>
+	Hello @context.User.Identity?.Name!
+</AuthorizeView>
 
 @if (IsConnected)
 {
@@ -15,7 +22,9 @@
 	<div class="list-group" id="messageList">
 		@foreach (var message in messages)
 		{
-			<div class="list-group-item">@message</div>
+			<div class="">
+			@message
+			</div>
 		}
 	</div>
 
@@ -32,19 +41,26 @@ else
 	private HubConnection hubConnection;
 
 	private List<string> messages = new List<string>();
-	private string userInput;
+	private string username;
 	private string messageInput;
 
 	// connect to hub
 	protected override async Task OnInitializedAsync()
 	{
+		// Hämta den inloggade användarens autentiseringstillstånd
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
+
+		username = user.Identity.Name; // Hämta användarnamnet
+		
+
 		hubConnection = new HubConnectionBuilder()
 		.WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
 		.Build();
 
-		hubConnection.On<string, string>("RecieveMessage", (user, message) =>
+		hubConnection.On<string, string>("RecieveMessage", (username, message) =>
 		{
-			var encodedMsg = $"{user}: {message}";
+			var encodedMsg = $"{username}: {message}";
 			messages.Add(encodedMsg);
 			InvokeAsync(StateHasChanged);
 
@@ -53,7 +69,7 @@ else
 		await hubConnection.StartAsync();
 	}
 
-	Task Send() => hubConnection.SendAsync("SendMessage", userInput, messageInput);
+	Task Send() => hubConnection.SendAsync("SendMessage", username, messageInput);
 
 	public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
 }

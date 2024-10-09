@@ -2,12 +2,22 @@ using LeChat.Client.Pages;
 using LeChat.Components;
 using LeChat.Components.Account;
 using LeChat.Data;
+using LeChat.Data.Services;
 using LeChat.Hubs;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+	options.ListenAnyIP(5176); // HTTP
+	options.ListenAnyIP(7176, listenOptions =>
+	{
+		listenOptions.UseHttps(); // Använder det installerade certifikatet automatiskt
+	});
+});
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -20,6 +30,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
+builder.Services.AddScoped<ChatMessageService>();
 
 builder.Services.AddAuthentication(options =>
     {
@@ -42,10 +53,13 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseWebAssemblyDebugging();
+	app.UseHsts();
+	app.UseWebAssemblyDebugging();
     app.UseMigrationsEndPoint();
 }
 else
@@ -55,7 +69,7 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+
 
 app.UseStaticFiles();
 app.UseAntiforgery();
