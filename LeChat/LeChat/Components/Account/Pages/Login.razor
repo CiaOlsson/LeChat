@@ -12,14 +12,17 @@
 
 <PageTitle>Log in</PageTitle>
 
-<h1>Log in</h1>
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4 offset-lg-4 pt-4 pb-4 border">
         <section>
             <StatusMessage Message="@errorMessage" />
             <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                 <DataAnnotationsValidator />
-                <h2>Use a local account to log in.</h2>
+                <div class="mb-3 text-center flex-column">
+                    <img src="images/Ragdoll-Cat.jpg" style="max-height: 5rem;" />
+                    <h3>Logga in</h3>
+                </div>
                 <hr />
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="form-floating mb-3">
@@ -48,20 +51,11 @@
                     <p>
                         <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
                     </p>
-                    <p>
-                        <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
                 </div>
             </EditForm>
         </section>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
-    </div>
+
 </div>
 
 @code {

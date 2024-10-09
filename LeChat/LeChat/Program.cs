@@ -2,6 +2,7 @@ using LeChat.Client.Pages;
 using LeChat.Components;
 using LeChat.Components.Account;
 using LeChat.Data;
+using LeChat.Hubs;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -56,6 +59,9 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.MapHub<ChatHub>("/chathub");
+
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

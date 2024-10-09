@@ -17,14 +17,16 @@
 
 <PageTitle>Register</PageTitle>
 
-<h1>Register</h1>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4 offset-lg-4 pt-4 pb-4 border">
         <StatusMessage Message="@Message" />
         <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
+            <div class="mb-3 text-center flex-column">
+                <img src="images/Ragdoll-Cat.jpg" style="max-height: 5rem;" />
+                <h3>Skapa nytt konto</h3>
+            </div>
             <hr />
             <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
@@ -44,13 +46,6 @@
             </div>
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </EditForm>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
     </div>
 </div>
 
