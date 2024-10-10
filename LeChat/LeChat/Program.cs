@@ -10,20 +10,25 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Konfigurera Kestrel för att använda Https
 builder.WebHost.ConfigureKestrel(options =>
 {
-	options.ListenAnyIP(5176); // HTTP
+	options.ListenAnyIP(5176); 
 	options.ListenAnyIP(7176, listenOptions =>
-	{
-		listenOptions.UseHttps(); // Använder det installerade certifikatet automatiskt
+	{   
+		listenOptions.UseHttps(); 
 	});
 });
 
-// Add services to the container.
+/*********** Här läggs alla tjänster till ***********/
+
+// Tjänster för Razor-komponenter och specificera interaktiva renderingstillstånd.
+// Detta gör det möjligt att använda både server-rendering och WebAssembly-rendering för komponenterna.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+// Lägg till SignalR
 builder.Services.AddSignalR();
 
 builder.Services.AddCascadingAuthenticationState();
@@ -32,6 +37,7 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 builder.Services.AddScoped<ChatMessageService>();
 
+// Tjänster för autentisering och användarhantering
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultScheme = IdentityConstants.ApplicationScheme;
@@ -39,11 +45,13 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
+// Tjänster och konfiguration för databasen. 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// tjänster och konfiguration för att använda Identity Framework
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
@@ -53,6 +61,7 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 
 var app = builder.Build();
 
+/*********** Här läggs all middleware till ***********/
 app.UseHttpsRedirection();
 
 // Configure the HTTP request pipeline.
@@ -74,9 +83,11 @@ else
 app.UseStaticFiles();
 app.UseAntiforgery();
 
+// Mappa ChatHuben som använder SignalR
 app.MapHub<ChatHub>("/chathub");
 
-
+// Mappa Razor-komponenter och specificera renderingstillståndet.
+// Tillåter auto-rendering och ger möjlighet att styra renderingsläget per komponent.
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()

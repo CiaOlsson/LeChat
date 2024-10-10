@@ -1,5 +1,6 @@
 ﻿@page "/chat"
-@using Shared.DTO
+@using Ganss.Xss
+
 
 @inject NavigationManager NavigationManager
 
@@ -43,6 +44,8 @@ else
 	private List<string> messages = new List<string>();
 	private string username;
 	private string messageInput;
+	// Jag har installerat paketeT HtmlSanitizer för att sanitera medelandena för att undvika Xss attacker
+	private readonly HtmlSanitizer sanitizer = new HtmlSanitizer();
 
 	// connect to hub
 	protected override async Task OnInitializedAsync()
@@ -51,7 +54,7 @@ else
 		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 		var user = authState.User;
 
-		username = user.Identity.Name; // Hämta användarnamnet
+		username = user.Identity.Name;
 		
 
 		hubConnection = new HubConnectionBuilder()
@@ -60,7 +63,9 @@ else
 
 		hubConnection.On<string, string>("RecieveMessage", (username, message) =>
 		{
-			var encodedMsg = $"{username}: {message}";
+			//Här saniteras meddelandena när de tas emot
+			var sanitizedMessage = sanitizer.Sanitize(message);
+			var encodedMsg = $"{username}: {sanitizedMessage}";
 			messages.Add(encodedMsg);
 			InvokeAsync(StateHasChanged);
 
@@ -69,7 +74,12 @@ else
 		await hubConnection.StartAsync();
 	}
 
-	Task Send() => hubConnection.SendAsync("SendMessage", username, messageInput);
+	Task Send()
+	{
+		//Här saniteras meddelandena innan de skickas iväg.
+		var sanitizedMessage = sanitizer.Sanitize(messageInput);
+		return hubConnection.SendAsync("SendMessage", username, sanitizedMessage);
+	}
 
 	public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
 }
